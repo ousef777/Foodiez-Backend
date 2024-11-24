@@ -6,7 +6,6 @@ require('dotenv').config();
 exports.signup = async (req, res, next) => {
   const { password } = req.body;
   try {
-    console.log(process.env.SALTROUNDS);
     const hashedPassword = await bcrypt.hash(password, +process.env.SALTROUNDS);
     req.body.password = hashedPassword;
     const newUser = await User.create(req.body);

@@ -12,9 +12,7 @@ exports.localStrategy = new LocalStrategy(
         const user = await User.findOne({ username: username });
         let passwordsMatch = false;
         if (user) {
-            console.log(user.password);
             passwordsMatch = await bcrypt.compare(password, user.password);
-            console.log(passwordsMatch); 
         }
         if (passwordsMatch) return done(null, user);
         else return done(null, false);
