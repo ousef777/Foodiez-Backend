@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const LocalStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const { fromAuthHeaderAsBearerToken } = require('passport-jwt').ExtractJwt;
-
+require('dotenv').config();
 
 exports.localStrategy = new LocalStrategy(
     { usernameField: 'username' }, 
@@ -12,7 +12,9 @@ exports.localStrategy = new LocalStrategy(
         const user = await User.findOne({ username: username });
         let passwordsMatch = false;
         if (user) {
-            passwordsMatch = await bcrypt.compare(password, user.password); 
+            console.log(user.password);
+            passwordsMatch = await bcrypt.compare(password, user.password);
+            console.log(passwordsMatch); 
         }
         if (passwordsMatch) return done(null, user);
         else return done(null, false);
