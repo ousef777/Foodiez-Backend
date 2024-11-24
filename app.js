@@ -1,16 +1,26 @@
 const express = require("express");
-require("dotenv").config();
-const PORT = process.env.PORT;
+const connectDb = require("./database");
+const recipesRoutes = require("./api/recipes/recipes.routes");
+const userRoutes = require("./api/users/users.routes");
+const notFoundHandler = require("./middlewares/notFoundHandler");
+const errorHandler = require("./middlewares/errorHandler");
+const passport = require('passport');
+const { localStrategy, jwtStrategy } = require('./middlewares/passport');
+
 const app = express();
+connectDb();
 
-app.get('/', (req, res) => {
-    res.json([
-        {
-            name: "Yousef Alfaili"
-        }
-    ]);
-})
+app.use(express.json());
+app.use(passport.initialize());
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+app.use("/recipes", recipesRoutes);
+app.use(userRoutes);
 
-app.listen(PORT, () => {
-    console.log(`The application is running on http://localhost:${PORT}`);
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+
+app.listen(8000, () => {
+  console.log("The application is running on localhost:8000");
 });
