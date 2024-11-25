@@ -15,9 +15,11 @@ exports.localStrategy = new LocalStrategy(
             passwordsMatch = await bcrypt.compare(password, user.password);
         }
         if (passwordsMatch) return done(null, user);
-        else return done(null, false);
+        else {
+            throw new Error("Invalid credentials");
+            // return done(null, false);
+        }
     } catch (error) {
-        // console.log("here");
         done(error);
     }
 });

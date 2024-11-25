@@ -14,7 +14,7 @@ exports.signup = async (req, res, next) => {
     res.status(201).json({token: token});
   } catch (err) {
     if (err.code === 11000) next(new Error("Username is used"));
-    next(err);
+    else next(err);
   }
 };
 
