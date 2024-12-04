@@ -3,14 +3,23 @@ const Recipe = require('../../models/Recipe');
 
 exports.createRecipe = async (req, res, next) => {
   try {
-    const { name, ingredients, category } = req.body;
     req.body.userId = req.user._id;
-    if (!ingredients) {
+    const recipe = {...req.body};
+    if (!recipe.ingredients) {
       return res.status(400).json({ message: 'Ingredients are required.' }); //400 Bad Request
     }
-
-    const newRecipe = await Recipe.create(req.body);
-    res.status(201).json({ message: 'Recipe created successfully!', recipe: newRecipe }); // 201 successfully created
+    console.log(req);
+    if (req.file)
+      recipe.image = `${req.protocol}://${req.get("host")}/${req.file.path}`;
+    var newRecipe = await Recipe.create(recipe);
+    const output = Object.fromEntries(
+      Object.entries(newRecipe.toJSON()).map(([key, value]) =>
+        key === "userId"
+          ? ["username", req.user.username]
+          : [key, value]
+      )
+    );
+    res.status(201).json({ message: 'Recipe created successfully!', recipe: output }); // 201 successfully created
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message }); //500 error in server 
     next(err);
