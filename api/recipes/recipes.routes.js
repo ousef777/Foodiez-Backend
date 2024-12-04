@@ -9,8 +9,8 @@ const {
     updateRecipe,
     deleteRecipe,
 } = require('./recipes.controllers');
-
-router.post('/', passport.authenticate('jwt', { session: false }), createRecipe);
+const upload = require("../../multer");
+router.post('/', passport.authenticate('jwt', { session: false }), upload.single('image'), createRecipe);
 
 router.get('/', getRecipes);
 
